@@ -68,11 +68,11 @@ int coinToss()
     int intResult;
     
     // Use random_device to generate engine seed value
-    random_device rd{};
+    random_device rd;
     
     // Use Mersenne twister engine (cool name) to generate pseudo-random numbers
     // Seeded with random from above
-    mt19937 engine{rd()};
+    mt19937 engine(rd());
     
     // Uniform distribution on the interval 1 - 2
     uniform_int_distribution<int> distribution(1,2);
