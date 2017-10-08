@@ -13,10 +13,7 @@
 
 
 #include <iostream>
-#include <iomanip>
-#include <cstdlib>
-#include <cmath>
-#include <ctime>
+#include <random>
 
 using namespace std;
 
@@ -32,7 +29,7 @@ int main()
     cout << "Please enter the number of times\n"
          << "you would like to flip the coin:\n";
     cin >> intCoinTosses;
-    
+    // Data validation
     while(!cin || intCoinTosses <= 0 || intCoinTosses > 100)
     {
         cout << "ERROR: Please enter a positive integer value between 1 and 100:\n";
@@ -41,6 +38,7 @@ int main()
         cin >> intCoinTosses;
     }
     
+    // Run this loop until the user-entered number has been reached
     for(int i = 1 ; i <= intCoinTosses ; i++)
     {
         intResult = coinToss();
@@ -55,14 +53,10 @@ int main()
             strResult = "Tails";
             cout << strResult << endl;
         }
-        //Catches bad return values and decrements i
-        //so that the program tries again.
-        //Program will always output desired number of results
-        //But may need to call coinToss() many more times.
+        // Error message if returned in is not 1 or 2;
         else
         {
-            //cout << "ERROR" << endl;
-            i--;
+            cout << "ERROR: BAD NUMBER GENERATED" << endl;
         }
     }
     
@@ -71,36 +65,25 @@ int main()
 
 int coinToss()
 {
-    int intResult,
-        intTempTime;
+    int intResult;
     
-    float fltClock;
+    // Use random_device to generate engine seed value
+    random_device rd{};
     
-    intTempTime = time(0);
+    // Use Mersenne twister engine (cool name) to generate pseudo-random numbers
+    // Seeded with random from above
+    mt19937 engine{rd()};
     
-    //Test when intTempTime is the same as time(0)
-    //It is sometimes false and falls through
-    //With no returned value
-    while(intTempTime == time(0))
-    {
-        while(intTempTime != time(0))
-        {
-            fltClock = time(0);
-            
-            unsigned seed = time(0);
-            
-            srand(seed);
-            
-            intResult = rand() % 2;
-            
-            intResult += 1;
-            
-            //Used for debug to see random outputs with heads/tails result
-            //cout << intResult << endl << time(0) << endl;
-            
-            return intResult;
-        }
-    }
-    return 0; // Default value to return, will cause main to decrement and try again
+    // Uniform distribution on the interval 1 - 2
+    uniform_int_distribution<int> distribution(1,2);
+    
+    // Puts the Mersenne twister engine into the uniform_int_distribution
+    // call to get random numbers (either 1 or 2) for coin tosses
+    intResult = distribution(engine);
+    
+    // debug used to output integer result
+    // cout << intResult << endl;
+    
+    return intResult;
 }
 
